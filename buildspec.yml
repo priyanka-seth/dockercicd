@@ -3,23 +3,15 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR Public...
-      - $(aws ecr-public get-login --no-include-email --region us-east-1)
-      - REPOSITORY_URI=public.ecr.aws/t7x1c6c1/docker-demo-app
-      - IMAGE_TAG=latest
-      - echo "Repository URI: $REPOSITORY_URI"
-      - echo "Image Tag: $IMAGE_TAG"
+      - sh -c "echo Logging in to Amazon ECR Public && aws ecr-public get-login --no-include-email --region us-east-1"
 
   build:
     commands:
-      - echo Building Docker image...
-      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+      - sh -c "REPOSITORY_URI=public.ecr.aws/t7x1c6c1/docker-demo-app && IMAGE_TAG=latest && echo Building Docker image && docker build -t $REPOSITORY_URI:$IMAGE_TAG ."
 
   post_build:
     commands:
-      - echo Pushing Docker image...
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo '{"ImageURI":"'$REPOSITORY_URI:$IMAGE_TAG'"}' > imageDetail.json
+      - sh -c "REPOSITORY_URI=public.ecr.aws/t7x1c6c1/docker-demo-app && IMAGE_TAG=latest && echo Pushing Docker image && docker push $REPOSITORY_URI:$IMAGE_TAG && echo '{\"ImageURI\":\"'$REPOSITORY_URI:$IMAGE_TAG'\"}' > imageDetail.json"
 
 artifacts:
   files:
